@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 ##Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///ingredients.db")
 db = SQLAlchemy(app)
 
 
@@ -43,6 +43,7 @@ def get_all_cafes():
 @app.route("/ingredients", methods=["GET"])
 def search_ingredients():
     loc_data = request.args.get('name')
+    print(loc_data)
     ingredients = Ingredient.query.filter_by(name=loc_data).all()
     if ingredients: # if the data requested exist
         all_data = ingredients
