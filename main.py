@@ -46,7 +46,7 @@ def get_all_cafes():
 @app.route("/ingredients", methods=["GET"])
 def search_ingredients():
     loc_data = request.args.get('name')
-    ingredients = Ingredient.query.filter_by(name=loc_data.capitalize()).all()
+    ingredients = Ingredient.query.filter_by(name=loc_data.title()).all()
     if ingredients: # if the data requested exist
         all_data = ingredients
         data_list = []
@@ -91,4 +91,4 @@ def post_ingredient():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
