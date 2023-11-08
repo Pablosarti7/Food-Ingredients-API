@@ -2,13 +2,17 @@ from flask import Flask, jsonify, render_template, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import os
+from flask_migrate import Migrate
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 ##Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///ingredients.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("POSTGRES_DB_URI")
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
