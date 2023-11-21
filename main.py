@@ -81,6 +81,10 @@ def post_ingredient():
         if not name or not description:
             abort(400, description="Bad Request: 'name' and 'description' fields are required.")
 
+        existing_ingredient = Ingredient.query.filter_by(name=name).first()
+        if existing_ingredient:
+            abort(400, description="An ingredient with this name already exists.")
+
         new_ingredient = Ingredient(name=name, description=description)
         db.session.add(new_ingredient)
         db.session.commit()
