@@ -63,7 +63,6 @@ def search_ingredients():
     
 API_KEY = "secret_api_key"
 
-## HTTP POST - Create Record
 @app.route("/add", methods=['GET', 'POST'])
 def post_ingredient():
     # Check if the correct API key was provided
@@ -73,22 +72,36 @@ def post_ingredient():
         abort(401, description="Unauthorized: API key is missing or invalid.")
     
     if request.method == "POST":
-        name = request.json.get('name')
-        description = request.json.get('description')
+        data = request.json
 
-        if not name or not description:
-            abort(400, description="Bad Request: 'name' and 'description' fields are required.")
+        # Check if data is a list of items
+        if isinstance(data, list):
+            for item in data:
+                process_ingredient(item)
+        elif isinstance(data, dict):  # It's a single item
+            process_ingredient(data)
+        else:
+            abort(400, description="Bad Request: Invalid data format.")
 
-        existing_ingredient = Ingredient.query.filter_by(name=name).first()
-        if existing_ingredient:
-            abort(400, description="An ingredient with this name already exists.")
-
-        new_ingredient = Ingredient(name=name, description=description)
-        db.session.add(new_ingredient)
-        db.session.commit()
-        return jsonify(response={"success": "Successfully added new ingredient."})
+        return jsonify(response={"success": "Successfully added new ingredient(s)."})
     else:
         return jsonify(response={"error": "Could't add new ingredient to database."})
+
+
+def process_ingredient(item):
+    name = item.get('name')
+    description = item.get('description')
+
+    if not name or not description:
+        abort(400, description="Bad Request: 'name' and 'description' fields are required.")
+
+    existing_ingredient = Ingredient.query.filter_by(name=name).first()
+    if existing_ingredient:
+        abort(400, description="An ingredient with this name already exists.")
+
+    new_ingredient = Ingredient(name=name, description=description)
+    db.session.add(new_ingredient)
+    db.session.commit()
 
 
 
