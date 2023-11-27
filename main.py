@@ -25,6 +25,7 @@ class Ingredient(db.Model):
 def home():
     return render_template("index.html")
 
+
 ## HTTP GET - Read Record
 @app.route("/all")
 def get_all_cafes():
@@ -34,7 +35,6 @@ def get_all_cafes():
         ingredients = dict(name=ingredient.name,
                      description=ingredient.description
                     )
-
         all_data.append(ingredients)
 
     return jsonify(ingredients=all_data)
@@ -52,7 +52,6 @@ def search_ingredients():
             data_dict = dict(name=data.name,
                        description=data.description
                         )
-            
             data_list.append(data_dict)
 
         return jsonify(ingredient=data_list)
@@ -63,6 +62,8 @@ def search_ingredients():
     
 API_KEY = "secret_api_key"
 
+
+## HTTP POST - Post Record
 @app.route("/add", methods=['GET', 'POST'])
 def post_ingredient():
     # Check if the correct API key was provided
@@ -103,6 +104,23 @@ def process_ingredient(item):
     db.session.add(new_ingredient)
     db.session.commit()
 
+
+## HTTP DELETE - Delete Record
+@app.route("/delete/<int:id>", methods=['GET', 'DELETE'])
+def delete_cafe(id):
+    apikey = request.headers.get('api-key')
+
+    if apikey != API_KEY:
+        abort(401, description="Unauthorized: API key is missing or invalid.")
+    
+    if request.method == "DELETE":
+            try:
+                ingredient_to_delete = Ingredient.query.get(id)
+                db.session.delete(ingredient_to_delete)
+                db.session.commit()
+                return jsonify(response={"Success": "Successfully deleted the cafe from the database."})
+            except:
+                return jsonify(response={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
 
 
 if __name__ == '__main__':
