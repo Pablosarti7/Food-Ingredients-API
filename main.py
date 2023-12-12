@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, render_template, request, abort
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
 import os
 
 
@@ -32,7 +31,7 @@ def get_all_cafes():
     for ingredient in all_ingredients:
         ingredients = dict(name=ingredient.name,
                      description=ingredient.description,
-                     rating=ingredient.description,
+                     rating=ingredient.rating,
                     )
         all_data.append(ingredients)
 
