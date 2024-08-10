@@ -59,7 +59,7 @@ def search_ingredients():
         return jsonify(error=not_found)
     
     
-API_KEY = "secret_api_key"
+API_KEY = os.environ.get("API_KEY")
 
 
 ## HTTP POST - Post Record
