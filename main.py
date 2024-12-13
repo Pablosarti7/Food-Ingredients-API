@@ -123,12 +123,5 @@ def delete_cafe(id):
                 return jsonify(response={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
 
 
-if __name__ == '__main__':
-    app.run(debug=False)
-
-
 if __name__ == "__main__":
-    port = os.environ.get("PORT", 5000)
-    host = "0.0.0.0"
-    debug_mode = os.getenv("FLASK_DEBUG", "False") == "True"
-    app.run(host=host, port=port, debug=debug_mode)
+    print("This script should be run with a WSGI server like Gunicorn.")
