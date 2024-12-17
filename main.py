@@ -72,9 +72,7 @@ def post_ingredient():
         abort(401, description="Unauthorized: API key is missing or invalid.")
     
     if request.method == "POST":
-        print("Headers:", request.headers)
-        print("Data received:", request.data)
-        print("Parsed JSON:", request.json)
+
         data = request.json
 
         
