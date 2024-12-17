@@ -72,6 +72,9 @@ def post_ingredient():
         abort(401, description="Unauthorized: API key is missing or invalid.")
     
     if request.method == "POST":
+        print("Headers:", request.headers)
+        print("Data received:", request.data)
+        print("Parsed JSON:", request.json)
         data = request.json
 
         
@@ -98,7 +101,7 @@ def process_ingredient(item):
 
     existing_ingredient = Ingredients.query.filter_by(name=name).first()
     if existing_ingredient:
-        abort(400, description="An ingredient with this name already exists.")
+        return jsonify({"warning": f"Ingredient '{name}' already exists."}), 200
 
     new_ingredient = Ingredients(name=name, description=description, rating=rating)
     db.session.add(new_ingredient)
@@ -124,4 +127,4 @@ def delete_cafe(id):
 
 
 if __name__ == "__main__":
-    print("This script should be run with a WSGI server like Gunicorn.")
+    app.run(debug=True, port=3001)
