@@ -1,12 +1,12 @@
 from flask import Flask, jsonify, render_template, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
-
+ 
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-##Connect to Database
+# Connect to Database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("POSTGRES_DB_URI")
 db = SQLAlchemy(app)
 
@@ -16,23 +16,24 @@ class Ingredients(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     rating = db.Column(db.String, nullable=False)
-    
+
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-## HTTP GET - Read Record
+# HTTP GET - Read Record
 @app.route("/all")
 def get_all_cafes():
     all_ingredients = db.session.query(Ingredients).all()
     all_data = []
     for ingredient in all_ingredients:
         ingredients = dict(name=ingredient.name,
-                     description=ingredient.description,
-                     rating=ingredient.rating,
-                    )
+                           description=ingredient.description,
+                           rating=ingredient.rating,
+                           )
         all_data.append(ingredients)
 
     return jsonify(ingredients=all_data)
@@ -43,26 +44,27 @@ def get_all_cafes():
 def search_ingredients():
     loc_data = request.args.get('name')
     ingredients = Ingredients.query.filter_by(name=loc_data.title()).all()
-    if ingredients: # if the data requested exist
+    if ingredients:  # if the data requested exist
         all_data = ingredients
         data_list = []
         for data in all_data:
             data_dict = dict(name=data.name,
-                       description=data.description,
-                       rating=data.rating,
-                        )
+                             description=data.description,
+                             rating=data.rating,
+                             )
             data_list.append(data_dict)
 
         return jsonify(ingredient=data_list)
     else:
-        not_found = {"Not Found": "Sorry, we don't have this ingredient information."}
+        not_found = {
+            "Not Found": "Sorry, we don't have this ingredient information."}
         return jsonify(error=not_found)
-    
-    
+
+
 API_KEY = os.environ.get("API_KEY")
 
 
-## HTTP POST - Post Record
+# HTTP POST - Post Record
 @app.route("/add", methods=['GET', 'POST'])
 def post_ingredient():
     # Check if the correct API key was provided
@@ -70,16 +72,15 @@ def post_ingredient():
     if api_key_provided != API_KEY:
         # If the key is wrong or not provided, return an error
         abort(401, description="Unauthorized: API key is missing or invalid.")
-    
+
     if request.method == "POST":
 
         data = request.json
 
-        
-        if isinstance(data, list): # Check if data is a list of items
+        if isinstance(data, list):  # Check if data is a list of items
             for item in data:
                 process_ingredient(item)
-        elif isinstance(data, dict): # It's a single item
+        elif isinstance(data, dict):  # It's a single item
             process_ingredient(data)
         else:
             abort(400, description="Bad Request: Invalid data format.")
@@ -101,27 +102,28 @@ def process_ingredient(item):
     if existing_ingredient:
         return jsonify({"warning": f"Ingredient '{name}' already exists."}), 200
 
-    new_ingredient = Ingredients(name=name, description=description, rating=rating)
+    new_ingredient = Ingredients(
+        name=name, description=description, rating=rating)
     db.session.add(new_ingredient)
     db.session.commit()
 
 
-## HTTP DELETE - Delete Record
+# HTTP DELETE - Delete Record
 @app.route("/delete/<int:id>", methods=['GET', 'DELETE'])
 def delete_cafe(id):
     apikey = request.headers.get('api-key')
 
     if apikey != API_KEY:
         abort(401, description="Unauthorized: API key is missing or invalid.")
-    
+
     if request.method == "DELETE":
-            try:
-                ingredient_to_delete = Ingredients.query.get(id)
-                db.session.delete(ingredient_to_delete)
-                db.session.commit()
-                return jsonify(response={"Success": "Successfully deleted the cafe from the database."})
-            except:
-                return jsonify(response={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
+        try:
+            ingredient_to_delete = Ingredients.query.get(id)
+            db.session.delete(ingredient_to_delete)
+            db.session.commit()
+            return jsonify(response={"Success": "Successfully deleted the cafe from the database."})
+        except:
+            return jsonify(response={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
 
 
 if __name__ == "__main__":
