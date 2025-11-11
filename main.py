@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("POSTGRES_DB_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 db = SQLAlchemy(app)
 
 
