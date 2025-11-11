@@ -1,6 +1,6 @@
 Flask>=2.2.5,<3.0
 Flask-SQLAlchemy>=3.0.0,<4.0
 gunicorn>=20.0.0,<24.0
-sqlalchemy==2.0.21
+sqlalchemy>=2.0.21
 Werkzeug>=2.2.0,<3.0
 psycopg2-binary>=2.9.0,<3.0

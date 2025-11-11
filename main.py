@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
- 
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -17,7 +17,7 @@ class Ingredients(db.Model):
     description = db.Column(db.String, nullable=False)
     rating = db.Column(db.String, nullable=False)
 
-
+# Home Route
 
 @app.route("/")
 def home():
