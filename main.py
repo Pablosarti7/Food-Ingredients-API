@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, render_template, request, abort  # type: ignore
 from flask_sqlalchemy import SQLAlchemy  # type: ignore
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
