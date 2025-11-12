@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request, abort  # type: ignore
 from flask_sqlalchemy import SQLAlchemy  # type: ignore
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 load_dotenv()
 
 app = Flask(__name__)
