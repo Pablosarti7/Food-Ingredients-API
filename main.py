@@ -1,5 +1,5 @@
-from flask import Flask, jsonify, render_template, request, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, render_template, request, abort  # type: ignore
+from flask_sqlalchemy import SQLAlchemy  # type: ignore
 import os
 
 
